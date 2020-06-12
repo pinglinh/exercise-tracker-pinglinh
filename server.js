@@ -64,7 +64,7 @@ app.post("/api/exercise/add", async function(req, res) {
   console.log("what is the actual date", date);
 
   const newExercise = new Exercise({
-    _id: user._id,
+    userId: user._id,
     description: req.body.description,
     duration: req.body.duration,
     date,
@@ -73,10 +73,8 @@ app.post("/api/exercise/add", async function(req, res) {
 
   const addNewExercise = await newExercise.save();
 
-  console.log(addNewExercise);
-
   res.json({
-    userId: addNewExercise._id,
+    _id: addNewExercise._id,
     description: addNewExercise.description,
     duration: addNewExercise.duration,
     date: new Date(addNewExercise.date).toDateString(),
