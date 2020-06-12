@@ -29,7 +29,6 @@ const newUserSchema = new Schema({
 const NewUser = mongoose.model("NewUser", newUserSchema);
 
 app.post("/api/exercise/new-user", async function(req, res) {
-  console.log("hello");
   const newUser = new NewUser({ username: req.body.username });
 
   const createNewUser = await newUser.save();
@@ -74,7 +73,7 @@ app.post("/api/exercise/add", async function(req, res) {
   const addNewExercise = await newExercise.save();
 
   res.json({
-    _id: addNewExercise._id,
+    _id: addNewExercise.userId,
     description: addNewExercise.description,
     duration: addNewExercise.duration,
     date: new Date(addNewExercise.date).toDateString(),
