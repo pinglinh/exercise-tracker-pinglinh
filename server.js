@@ -82,7 +82,7 @@ app.post("/api/exercise/add", async function(req, res) {
 });
 
 app.get("/api/exercise/log", async function(req, res) {
-  const user = await Exercise.find({ userId: req.query.userId });
+  const user = await Exercise.find({ _id: req.query.userId });
 
   const from = req.query.from;
   const to = req.query.to;
