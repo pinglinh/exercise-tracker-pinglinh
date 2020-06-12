@@ -59,7 +59,7 @@ const Exercise = mongoose.model("Exercise", exerciseSchema);
 app.post("/api/exercise/add", async function(req, res) {
   const user = await NewUser.findById(req.body.userId);
 
-  const date = req.body.date === null ? Date.now() : req.body.date;
+  const date = req.body.date ||  Date.now();
 
   console.log("what is the actual date", date);
 
@@ -76,7 +76,7 @@ app.post("/api/exercise/add", async function(req, res) {
   console.log(addNewExercise);
 
   res.json({
-    userId: addNewExercise.userId,
+    userId: addNewExercise._id,
     description: addNewExercise.description,
     duration: addNewExercise.duration,
     date: new Date(addNewExercise.date).toDateString(),
