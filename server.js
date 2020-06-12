@@ -65,7 +65,10 @@ app.get("/api/exercise/users", async function(req, res) {
 });
 
 const exerciseSchema = new Schema({
-  userId: String,
+  userId: {
+    type: String,
+    required: true
+  },
   description: String,
   duration: Number,
   date: Date,
@@ -77,7 +80,7 @@ const Exercise = mongoose.model("Exercise", exerciseSchema);
 app.post("/api/exercise/add", async function(req, res) {
   const user = await NewUser.findById(req.body.userId);
 
-  const date = req.body.date === "" ? Date.now() : req.body.date;
+  const date = req.body.date === null ? Date.now() : req.body.date;
 
   console.log("what is the actual date", date);
 
@@ -109,6 +112,35 @@ app.get("/api/exercise/log", async function(req, res) {
   const to = req.query.to;
   const limit = parseInt(req.query.limit);
 
+  if (from && to && limit) {
+    const allParams = await Exercise.find({
+      date: {
+        $gte: from,
+        $lte: to
+      }
+    })
+      .sort({ date: 1 })
+      .limit(limit)
+      .exec();
+
+    console.log("does this work", allParams);
+
+    res.json({
+      userId: allParams[0].userId,
+      username: allParams[0].username,
+      from: new Date(from).toDateString(),
+      to: new Date(to).toDateString(),
+      count: allParams.length,
+      log: allParams.map(exercise => {
+        return {
+          description: exercise.description,
+          duration: exercise.duration,
+          date: new Date(exercise.date).toDateString()
+        };
+      })
+    });
+  }
+  
   if (from && to) {
     const user2 = await Exercise.find({
       date: {
@@ -154,32 +186,7 @@ app.get("/api/exercise/log", async function(req, res) {
     });
   }
 
-  if (from && to && limit) {
-    const allParams = await Exercise.find({
-      date: {
-        $gte: from,
-        $lte: to
-      }
-    })
-      .sort({ date: 1 })
-      .limit(limit)
-      .exec();
-
-    console.log("does this work", allParams);
-
-    res.json({
-      userId: allParams[0].userId,
-      username: allParams[0].username,
-      count: allParams.length,
-      log: allParams.map(exercise => {
-        return {
-          description: exercise.description,
-          duration: exercise.duration,
-          date: new Date(exercise.date).toDateString()
-        };
-      })
-    });
-  }
+  
 
   res.json({
     userId: user[0].userId,
