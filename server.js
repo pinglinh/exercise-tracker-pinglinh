@@ -119,7 +119,7 @@ app.get("/api/exercise/log", async function(req, res) {
       })
     });
   }
-  
+
   if (from && to) {
     const user2 = await Exercise.find({
       date: {
@@ -137,6 +137,54 @@ app.get("/api/exercise/log", async function(req, res) {
       to: new Date(to).toDateString(),
       count: user2.length,
       log: user2.map(exercise => {
+        return {
+          description: exercise.description,
+          duration: exercise.duration,
+          date: new Date(exercise.date).toDateString()
+        };
+      })
+    });
+  }
+
+  if (from) {
+    const fromDate = await Exercise.find({
+      date: {
+        $gte: from
+      }
+    })
+      .sort({ date: 1 })
+      .exec();
+
+    res.json({
+      userId: fromDate[0].userId,
+      username: fromDate[0].username,
+      from: new Date(from).toDateString(),
+      count: fromDate.length,
+      log: fromDate.map(exercise => {
+        return {
+          description: exercise.description,
+          duration: exercise.duration,
+          date: new Date(exercise.date).toDateString()
+        };
+      })
+    });
+  }
+
+  if (to) {
+    const toDate = await Exercise.find({
+      date: {
+        $lte: to
+      }
+    })
+      .sort({ date: 1 })
+      .exec();
+
+    res.json({
+      userId: toDate[0].userId,
+      username: toDate[0].username,
+      to: new Date(to).toDateString(),
+      count: toDate.length,
+      log: toDate.map(exercise => {
         return {
           description: exercise.description,
           duration: exercise.duration,
@@ -164,8 +212,6 @@ app.get("/api/exercise/log", async function(req, res) {
       })
     });
   }
-
-  
 
   res.json({
     userId: user[0].userId,
@@ -203,7 +249,6 @@ app.use((err, req, res, next) => {
     .type("txt")
     .send(errMessage);
 });
-
 
 const listener = app.listen(process.env.PORT || 3000, () => {
   console.log("Your app is listening on port " + listener.address().port);
