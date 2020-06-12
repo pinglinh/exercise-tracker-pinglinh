@@ -64,7 +64,7 @@ app.post("/api/exercise/add", async function(req, res) {
   console.log("what is the actual date", date);
 
   const newExercise = new Exercise({
-    userId: user._id,
+    _id: user._id,
     description: req.body.description,
     duration: req.body.duration,
     date,
