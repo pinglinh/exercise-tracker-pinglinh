@@ -104,7 +104,7 @@ app.get("/api/exercise/log", async function(req, res) {
     console.log("does this work", allParams);
 
     res.json({
-      userId: allParams[0].userId,
+      _id: allParams[0].userId,
       username: allParams[0].username,
       from: new Date(from).toDateString(),
       to: new Date(to).toDateString(),
@@ -130,7 +130,7 @@ app.get("/api/exercise/log", async function(req, res) {
       .exec();
 
     res.json({
-      userId: user2[0].userId,
+      _id: user2[0].userId,
       username: user2[0].username,
       from: new Date(from).toDateString(),
       to: new Date(to).toDateString(),
@@ -155,7 +155,7 @@ app.get("/api/exercise/log", async function(req, res) {
       .exec();
 
     res.json({
-      userId: fromDate[0].userId,
+      _id: fromDate[0].userId,
       username: fromDate[0].username,
       from: new Date(from).toDateString(),
       count: fromDate.length,
@@ -179,7 +179,7 @@ app.get("/api/exercise/log", async function(req, res) {
       .exec();
 
     res.json({
-      userId: toDate[0].userId,
+      _id: toDate[0].userId,
       username: toDate[0].username,
       to: new Date(to).toDateString(),
       count: toDate.length,
@@ -199,7 +199,7 @@ app.get("/api/exercise/log", async function(req, res) {
       .exec();
 
     res.json({
-      userId: limitUser[0].userId,
+      _id: limitUser[0].userId,
       username: limitUser[0].username,
       count: limitUser.length,
       log: limitUser.map(exercise => {
@@ -213,7 +213,7 @@ app.get("/api/exercise/log", async function(req, res) {
   }
 
   res.json({
-    userId: user[0].userId,
+    _id: user[0].userId,
     username: user[0].username,
     count: user.length,
     log: user.map(exercise => {
