@@ -58,7 +58,7 @@ const Exercise = mongoose.model("Exercise", exerciseSchema);
 app.post("/api/exercise/add", async function(req, res) {
   const user = await NewUser.findById(req.body.userId);
 
-  const date = req.body.date ||  Date.now();
+  const date = req.body.date || Date.now();
 
   console.log("what is the actual date", date);
 
@@ -83,20 +83,23 @@ app.post("/api/exercise/add", async function(req, res) {
 
 app.get("/api/exercise/log", async function(req, res) {
   const user = await Exercise.find({ userId: req.query.userId });
-  
-  console.log('USER LOG', user)
+
+  console.log("USER LOG", user);
 
   const from = req.query.from;
   const to = req.query.to;
   const limit = parseInt(req.query.limit);
 
   if (from && to && limit) {
-    const allParams = await Exercise.find({
-      date: {
-        $gte: from,
-        $lte: to
+    const allParams = await Exercise.find(
+      { userId: req.query.userId },
+      {
+        date: {
+          $gte: from,
+          $lte: to
+        }
       }
-    })
+    )
       .sort({ date: 1 })
       .limit(limit)
       .exec();
@@ -120,12 +123,15 @@ app.get("/api/exercise/log", async function(req, res) {
   }
 
   if (from && to) {
-    const user2 = await Exercise.find({
-      date: {
-        $gte: from,
-        $lte: to
+    const user2 = await Exercise.find(
+      { userId: req.query.userId },
+      {
+        date: {
+          $gte: from,
+          $lte: to
+        }
       }
-    })
+    )
       .sort({ date: 1 })
       .exec();
 
@@ -146,11 +152,14 @@ app.get("/api/exercise/log", async function(req, res) {
   }
 
   if (from) {
-    const fromDate = await Exercise.find({
-      date: {
-        $gte: from
+    const fromDate = await Exercise.find(
+      { userId: req.query.userId },
+      {
+        date: {
+          $gte: from
+        }
       }
-    })
+    )
       .sort({ date: 1 })
       .exec();
 
@@ -170,11 +179,14 @@ app.get("/api/exercise/log", async function(req, res) {
   }
 
   if (to) {
-    const toDate = await Exercise.find({
-      date: {
-        $lte: to
+    const toDate = await Exercise.find(
+      { userId: req.query.userId },
+      {
+        date: {
+          $lte: to
+        }
       }
-    })
+    )
       .sort({ date: 1 })
       .exec();
 
@@ -194,7 +206,7 @@ app.get("/api/exercise/log", async function(req, res) {
   }
 
   if (limit) {
-    const limitUser = await Exercise.find({})
+    const limitUser = await Exercise.find({ userId: req.query.userId })
       .limit(limit)
       .exec();
 
