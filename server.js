@@ -215,8 +215,6 @@ app.get("/api/exercise/log", async function(req, res) {
   res.json({
     userId: user[0].userId,
     username: user[0].username,
-    from: new Date(from).toDateString(),
-    to: new Date(to).toDateString(),
     count: user.length,
     log: user.map(exercise => {
       return {
