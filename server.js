@@ -82,58 +82,61 @@ app.post("/api/exercise/add", async function(req, res) {
 });
 
 app.get("/api/exercise/log", async function(req, res) {
-  const user = await Exercise.find({ userId: req.query.userId });
+  const { userId, from, to, limit } = req.query;
+  const user = await Exercise.find({ userId });
 
-  console.log("USER LOG", user);
+  console.log("What is req.body", req.query);
 
-  const from = req.query.from;
-  const to = req.query.to;
-  const limit = parseInt(req.query.limit);
+  const limitNumber = parseInt(limit);
 
-  if (from && to && limit) {
-    const allParams = await Exercise.find(
-      { userId: req.query.userId },
-      {
-        date: {
-          $gte: from,
-          $lte: to
-        }
-      }
-    )
-      .sort({ date: 1 })
-      .limit(limit)
-      .exec();
+  //   if (from && to && limit) {
+  //     const allParams = await Exercise.find(
+  //       { userId: req.query.userId },
+  //       {
+  //         date: {
+  //           $gte: from,
+  //           $lte: to
+  //         }
+  //       }
+  //     )
+  //       .sort({ date: 1 })
+  //       .limit(limit)
+  //       .exec();
 
-    console.log("does this work", allParams);
+  //     console.log("does this work", allParams);
 
-    res.json({
-      userId: allParams[0].userId,
-      username: allParams[0].username,
-      from: new Date(from).toDateString(),
-      to: new Date(to).toDateString(),
-      count: allParams.length,
-      log: allParams.map(exercise => {
-        return {
-          description: exercise.description,
-          duration: exercise.duration,
-          date: new Date(exercise.date).toDateString()
-        };
-      })
-    });
-  }
+  //     res.json({
+  //       userId: allParams[0].userId,
+  //       username: allParams[0].username,
+  //       from: new Date(from).toDateString(),
+  //       to: new Date(to).toDateString(),
+  //       count: allParams.length,
+  //       log: allParams.map(exercise => {
+  //         return {
+  //           description: exercise.description,
+  //           duration: exercise.duration,
+  //           date: new Date(exercise.date).toDateString()
+  //         };
+  //       })
+  //     });
+  //   }
 
   if (from && to) {
-    const user2 = await Exercise.find(
-      { userId: req.query.userId },
-      {
-        date: {
-          $gte: from,
-          $lte: to
-        }
+    console.log("here");
+    const user2 = await Exercise.find({
+      userId,
+      date: {
+        $gte: from,
+        $lte: to
       }
-    )
+    })
       .sort({ date: 1 })
-      .exec();
+      .exec()
+      .catch(err => {
+        console.log(err);
+      });
+
+    console.log("HELLO", user2);
 
     res.json({
       userId: user2[0].userId,
@@ -151,63 +154,63 @@ app.get("/api/exercise/log", async function(req, res) {
     });
   }
 
-  if (from) {
-    const fromDate = await Exercise.find(
-      { userId: req.query.userId },
-      {
-        date: {
-          $gte: from
-        }
-      }
-    )
-      .sort({ date: 1 })
-      .exec();
+  //   if (from) {
+  //     const fromDate = await Exercise.find(
+  //       { userId: req.query.userId },
+  //       {
+  //         date: {
+  //           $gte: from
+  //         }
+  //       }
+  //     )
+  //       .sort({ date: 1 })
+  //       .exec();
 
-    res.json({
-      userId: fromDate[0].userId,
-      username: fromDate[0].username,
-      from: new Date(from).toDateString(),
-      count: fromDate.length,
-      log: fromDate.map(exercise => {
-        return {
-          description: exercise.description,
-          duration: exercise.duration,
-          date: new Date(exercise.date).toDateString()
-        };
-      })
-    });
-  }
+  //     res.json({
+  //       userId: fromDate[0].userId,
+  //       username: fromDate[0].username,
+  //       from: new Date(from).toDateString(),
+  //       count: fromDate.length,
+  //       log: fromDate.map(exercise => {
+  //         return {
+  //           description: exercise.description,
+  //           duration: exercise.duration,
+  //           date: new Date(exercise.date).toDateString()
+  //         };
+  //       })
+  //     });
+  //   }
 
-  if (to) {
-    const toDate = await Exercise.find(
-      { userId: req.query.userId },
-      {
-        date: {
-          $lte: to
-        }
-      }
-    )
-      .sort({ date: 1 })
-      .exec();
+  //   if (to) {
+  //     const toDate = await Exercise.find(
+  //       { userId: req.query.userId },
+  //       {
+  //         date: {
+  //           $lte: to
+  //         }
+  //       }
+  //     )
+  //       .sort({ date: 1 })
+  //       .exec();
 
-    res.json({
-      userId: toDate[0].userId,
-      username: toDate[0].username,
-      to: new Date(to).toDateString(),
-      count: toDate.length,
-      log: toDate.map(exercise => {
-        return {
-          description: exercise.description,
-          duration: exercise.duration,
-          date: new Date(exercise.date).toDateString()
-        };
-      })
-    });
-  }
+  //     res.json({
+  //       userId: toDate[0].userId,
+  //       username: toDate[0].username,
+  //       to: new Date(to).toDateString(),
+  //       count: toDate.length,
+  //       log: toDate.map(exercise => {
+  //         return {
+  //           description: exercise.description,
+  //           duration: exercise.duration,
+  //           date: new Date(exercise.date).toDateString()
+  //         };
+  //       })
+  //     });
+  //   }
 
   if (limit) {
-    const limitUser = await Exercise.find({ userId: req.query.userId })
-      .limit(limit)
+    const limitUser = await Exercise.find({ userId })
+      .limit(limitNumber)
       .exec();
 
     res.json({
